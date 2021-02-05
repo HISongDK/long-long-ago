@@ -1,25 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Login from "./pages/login/login.jsx";
+import Admin from "./pages/admin/admin.jsx";
+import "./App.less";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+/**
+ * 根组件
+ */
+export default class App extends Component {
+  render() {
+    return (
+      <Router>
+        <Switch>
+          {/* 我也是才看出来react配置路由和vue占位符一样,哪需要显示往哪配 */}
+          <Route path="/login" component={Login} />
+          <Route path="/" component={Admin} />
+        </Switch>
+      </Router>
+    );
+  }
 }
-
-export default App;
