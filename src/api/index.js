@@ -4,6 +4,8 @@
  * 每个函数的返回值都是promise
  */
 
+import { message } from "antd";
+import jsonp from "jsonp";
 import ajax from "./ajax";
 
 let BASE_URL = "http://localhost:5000";
@@ -30,3 +32,20 @@ export const reqAddUser = (user) =>
     user,
     "post"
   );
+// jsonp 请求天气
+export const reqWeather = (city) => {
+  return new Promise((resolve, reject) => {
+    jsonp(
+      `https://v0.yiketianqi.com/api?appid=56862258&appsecret=c8tBmWNk&version=v61&city=${city}`,
+      {},
+      (err, data) => {
+        if (!err) {
+          const { wea, wea_img } = data;
+          resolve({ wea, wea_img });
+        } else {
+          message.error("获取天气信息失败", 0.8);
+        }
+      }
+    );
+  });
+};

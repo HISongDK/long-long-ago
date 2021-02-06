@@ -8,7 +8,7 @@
     + 掌握`creat-react-app`创建脚手架初始化项目开发
     + 使用`node + mongodb + express + mongosse`开发后台应用 (这玩意跟我有什么关系)
 2. react插件或第三方库
-    + 掌握`react-routr-dom`配置路由开发react单页面应用
+    + [ √ ] 掌握`react-routr-dom`配置路由开发react单页面应用
     + 学会使用`redux / react-redux / redux-thunk`管理应用组件状态
     + [ √ ] 掌握`axios / jsonp`与后端进行数据交互
     + 掌握`antd`组件库构建页面
@@ -18,6 +18,15 @@
 
 
 ## 技术选型
+|序号|前台|后台|交互|模块化|项目构建|其他|
+|-|-|-|-|-|-|-|
+|1 | react | node |`ajax请求`|ES6|webpack|`富文本编辑器`
+|2 | react-router-dom | mongodb |1.axios   `2.jsonp`  3.promise  `async`  await|commonJS|creat-react-app|**`1`**. react-draft-wysiwyg  **`2`**. draft-js    **`3`**. draft-to-html
+|3 | antd | mongoose |`接口测试工具`||eslint|`图表库`
+|4 | redux | multer |postman|||1. echarts  2. echarts-for-react
+|5 |  | blueimp-md5 ||||
+-----------------------
+-----------------------
 + 前台数据展现/交互/组件化
 > 1. react
 > 2. react-router-dom
@@ -152,4 +161,34 @@ yarn add react-router-dom        //安装react-router-dom
 1. 挑一个布局一样的
 2. 把布局中，结构较复杂的拆出来，单独写成组件引入  
     * 小的样式改动直接jsx行内style两个大括号属性驼峰命名法就行
-    * 单组件的样式，就单在组件的文件夹中创建一个样式文件引入
+    * 单组件的样式，就单在组件的文件夹中创建一个样式文件引入  
+`才想到,其实都是拆出去写的,内容区显示的是路由组件,肯定都是拆出去的`
+
+***
+## 侧边导航栏
+1. 头部[ 随便写了个标题,也没弄图标,(就是高度设置和右侧三栏中头部一样) ]
+2. 路由选项卡:  
+    * 使用`Menu/Menu.Item/SubMenu`组件
+    * 配置 config/menuConfig.js 模块暴露 menuList 列表
+        * icon 图标组件引入,可以统一在,遍历数组生成标签结构时统一`直接加 < /> 尖角号`,没有问题
+    * 遍历**路由数据数据**,生成`标签结构`
+        * 判断是否有子路由 
+            * 没有返回**Menu.item**组件
+            * 有 return `SubMenu` 组件
+                * 并在其中递归调用该函数生成子路由选项组件
+    * `功能性BUG`  
+        1. `自动选中菜单项`
+            > 直接获取当前路径(同时也是key),设置为 Menu 组件的`selectedKey`属性
+        2. `选中的菜单项的**父级菜单**自动展开`
+            > 在遍历出`标签结构的同时`,从有子元素的分支语句中,使用 find 方法查询子元素路径有当前路径,那么把这个元素设置为`defaultOpenKeys`,就会自动展开了  
+        * `注意: 上述设置,注意封装产生的标签结构函数,调用时候`**保证设置上述(第二个)属性时已经调用过,获得了需要展开的 key 值**
+---
+### 右侧 Header 组件
+1. 静态布局
+    * 行内元素直接text-align,就可以调布局位置了,不用再包一层块元素
+    * 三角可以用::after伪元素边框写,就是注意别`顺手`写成visibility:hidden
+2. 欢迎用户,直接就是memoryUtil里的user里取就行,退出的话,localStorage和memoryUtil都要清一下
+3. 动态时间,我是用的toLocaleString()方法
+4. 当前页面标题,还是遍历找就行,像那个默认展开的一样
+5. 天气是用的jsonp库封装了个promise包着的jsonp请求  
+`注意: 定义状态,动态更新`
