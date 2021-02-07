@@ -192,3 +192,16 @@ yarn add react-router-dom        //安装react-router-dom
 4. 当前页面标题,还是遍历找就行,像那个默认展开的一样
 5. 天气是用的jsonp库封装了个promise包着的jsonp请求  
 `注意: 定义状态,动态更新`
+### 商品分类管理
+1. 静态布局
+    * Card . Table . Button 三个组件
+        1. Card 左右部分,定义在外面,结构清晰,便于维护
+        2. Table 显示的数据和列分布 rowkey 指定数据中某属性作为 key 值
+            + 数据 dataSource 
+            + columns 可以设置宽 加一个接受数值的 width 属性就行 dataIndex 指定了显示数据的属性
+        3. Button 有type="link"属性,无边框,加颜色button
+2. 定义接口请求函数 
+    * 首先 BASE_URL 别忘了,便于管理.更改
+    * 请求函数的形参名和接口要求参数名一样的话,就能使用名值相同时对象的简写方式
+    * 注意相似的参数名,不要用混
+3. 动态显示一级分类列表

@@ -34,13 +34,10 @@ function Header(props) {
     })();
   }, []);
   // 获取当前页面名
-  const path = props.location.pathname;
+  const [title, setTitle] = useState("");
 
   useEffect(() => {
-    getTitle();
-  }, [path]);
-  const [title, setTitle] = useState("");
-  function getTitle() {
+    const path = props.location.pathname;
     menuList.forEach((item) => {
       if (item.key === path) {
         setTitle(item.title);
@@ -56,7 +53,8 @@ function Header(props) {
         }
       }
     });
-  }
+  }, [props.location.pathname]);
+
   // 退出弹框
   function modalConfirm() {
     Modal.confirm({
@@ -83,7 +81,7 @@ function Header(props) {
         <div className="path-title">{title}</div>
         <div className="time-weather">
           <span>{time}</span>
-          <img src="" alt={`假装有图[${wea_img}]`} />
+          <img src="" alt={`[${wea_img}]`} />
           <span>{wea}</span>
         </div>
       </div>

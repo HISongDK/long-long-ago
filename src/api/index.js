@@ -2,6 +2,8 @@
  * 要求能力:【能根据接口文档定义接口请求函数】
  * 包含应有中,所有接口请求函数
  * 每个函数的返回值都是promise
+ *
+ * 基本要求: 能够根据接口文档定义接口请求函数
  */
 
 import { message } from "antd";
@@ -32,6 +34,25 @@ export const reqAddUser = (user) =>
     user,
     "post"
   );
+// 获取分类
+export const reqCategorys = (parentId) =>
+  ajax(BASE_URL + "/manage/category/list", { parentId });
+// 添加分类
+export const reqAddCategory = (parentId, categoryName) =>
+  ajax(BASE_URL + "/manage/category/add", { parentId, categoryName }, "post");
+// 修改分类
+export const reqUpdateCategory = ({ categoryId, categoryName }) =>
+  ajax(
+    BASE_URL + "/manage/category/update",
+    { categoryId, categoryName },
+    "post"
+  );
+/**
+ * 以上自己写的三个请求函数竟然忘了写返回值了
+ * ajax 封装好的 自然会返回一个 promise 对象
+ * 问题是 自己再次封装的函数却忘了返回值了
+ * 打印出 undefined 自然是函数没有 return 的时候默认返回值
+ */
 // jsonp 请求天气
 export const reqWeather = (city) => {
   return new Promise((resolve, reject) => {

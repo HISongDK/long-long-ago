@@ -33,7 +33,12 @@ export default class Admin extends Component {
     }
     return (
       <>
-        <Layout style={{ height: "100%" }}>
+        <Layout
+          style={{
+            height: "100%",
+            overflow: "auto",
+          }}
+        >
           {/* 这个行内样式要写两个花括号的，忘了具体，死记就行了 */}
           <Sider>
             <LeftNav></LeftNav>
@@ -41,7 +46,11 @@ export default class Admin extends Component {
           <Layout>
             <Header></Header>
             <Content
-              style={{ margin: 20, marginBottom: 0, backgroundColor: "#fff" }}
+              style={{
+                margin: 20,
+                marginBottom: 0,
+                backgroundColor: "#fff",
+              }}
             >
               <Switch>
                 <Route path="/home" component={Home} />
