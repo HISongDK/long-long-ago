@@ -7,7 +7,10 @@ const { SubMenu } = Menu;
 
 function LeftNav(props) {
   // 取选中值
-  const selectKey = props.location.pathname;
+  let selectKey = props.location.pathname;
+  if (selectKey.indexOf("/product") > -1) {
+    selectKey = "/product";
+  }
   // 取默认展开值
   let defaultOpenKey = "";
 
@@ -28,10 +31,12 @@ function LeftNav(props) {
           </Menu.Item>
         );
       } else {
-        let cItem = item.children.find((iItem) => iItem.key === selectKey);
+        let cItem = item.children.find(
+          (iItem) => selectKey.indexOf(iItem.key) === 0
+        );
+        // 完全相等当前路径,才会获取到,多以改成,后面包括前面的就行 草还真行
         if (cItem) {
           defaultOpenKey = item.key;
-          console.log(defaultOpenKey);
         }
         return (
           <SubMenu key={item.key} icon={<item.icon />} title={item.title}>

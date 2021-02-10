@@ -8,6 +8,7 @@
 
 import { message } from "antd";
 import jsonp from "jsonp";
+import { PAGE_SIZE } from "../utils/constants";
 import ajax from "./ajax";
 
 let BASE_URL = "http://localhost:5000";
@@ -47,6 +48,50 @@ export const reqUpdateCategory = ({ categoryId, categoryName }) =>
     { categoryId, categoryName },
     "post"
   );
+// 请求商品(分页)
+export const reqProducts = (pageNum = 1, pageSize = PAGE_SIZE) =>
+  ajax(BASE_URL + "/manage/product/list", { pageNum, pageSize }); // 我是真不长记性啊 ,封装的请求函数又忘了返回值,记住啊,函数的参数和返回值都是要好好想想的啊
+/* 
+  搜索商品分页列表(通过商品描述/名称)
+  searchType 指定 productName || productDesc
+  searchName 就是要搜的内容
+*/
+export const reqSearchProducts = ({
+  pageNum,
+  pageSize,
+  searchName,
+  searchType,
+}) =>
+  ajax(BASE_URL + "/manage/product/search", {
+    pageNum,
+    pageSize,
+    [searchType]: searchName,
+  });
+// 通过id获取分类信息
+export const reqCategory = (categoryId) =>
+  ajax(BASE_URL + "/manage/category/info", { categoryId });
+
+// 商品上架/下架
+export const reqUpdateStatus = (productId, status) =>
+  ajax(
+    BASE_URL + "/manage/product/updateStatus",
+    { productId, status },
+    "POST"
+  );
+
+/* 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+*/
 /**
  * 以上自己写的三个请求函数竟然忘了写返回值了
  * ajax 封装好的 自然会返回一个 promise 对象

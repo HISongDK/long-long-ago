@@ -15,10 +15,10 @@ class Category extends Component {
     super(props);
     // 定义分类状态
     this.state = {
-      categorys: [], // 一级分类列表
+      // categorys: [], // 一级分类列表
       subCategorys: [], // 二级分类列表
       isLoading: false, // 是否加载
-      parentId: 0, // 当前需要展示的分类列表的父ID
+      parentId: "0", // 当前需要展示的分类列表的父ID
       parentName: "", // 当前需要展示的分类列表的父分类名
 
       isModalVisible: 0, // 对话框可见
@@ -27,8 +27,8 @@ class Category extends Component {
   }
 
   // 定义获取一级分类/二级分类的函数
-  getCategory = async () => {
-    const { parentId } = this.state;
+  getCategory = async (Id) => {
+    let parentId = Id || this.state.parentId;
     this.setState({
       isLoading: true,
     });
@@ -37,7 +37,7 @@ class Category extends Component {
     if (result.status === 0) {
       const categorys = result.data;
       // 取出分类数组 可能是一级的也可能是二级的
-      if (parentId === 0) {
+      if (parentId === "0") {
         // 先给内存工具一份,好添加显示 下拉框选项,减少ajax请求
         memoryUtil.categorys = categorys;
         // 如果父分类id为0说明是一级分类,否则是二级分类数组
@@ -114,7 +114,14 @@ class Category extends Component {
         this.setState({
           isModalVisible: 0,
         });
-        this.getCategory();
+        if (result.parentId === this.state.parentId) {
+          this.getCategory();
+        } else if (result.parentId === "0") {
+          console.log("zhewanyizhixinglemeiyoua ");
+          this.getCategory("0");
+          // 给函数传入 参数,修改之前的函数
+        }
+        // 只用当当前要添加的分类parentId和当前状态中的parentId相同时,就是说当前页面就是添加的当前默认选中的父分类,才会重新获取页面数据展示,否则没有必要
       } else {
         message.error("添加分类失败");
       }
@@ -173,7 +180,7 @@ class Category extends Component {
             >
               修改分类
             </Button>
-            {this.state.parentId === 0 ? (
+            {this.state.parentId === "0" ? (
               <Button
                 type="link"
                 size="small"
@@ -218,13 +225,13 @@ class Category extends Component {
           style={{ fontSize: "16px" }}
           type="link"
           onClick={() => {
-            this.setState({ parentId: 0 });
+            this.setState({ parentId: "0" });
             this.getCategory();
           }}
         >
           一级分类列表
         </Button>
-        {parentId !== 0 ? (
+        {parentId !== "0" ? (
           <span style={{ marginLeft: "-10px" }}>/ {parentName}</span>
         ) : null}
       </>
@@ -246,7 +253,7 @@ class Category extends Component {
           extra={extra}
         >
           <Table
-            dataSource={parentId === 0 ? categorys : subCategorys}
+            dataSource={parentId === "0" ? categorys : subCategorys}
             columns={this.columns}
             bordered={true}
             //想不到啊 表格边框属性时 bordered

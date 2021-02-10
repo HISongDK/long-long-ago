@@ -40,10 +40,17 @@ export default class Admin extends Component {
           }}
         >
           {/* 这个行内样式要写两个花括号的，忘了具体，死记就行了 */}
-          <Sider>
+          <Sider
+            style={{
+              overflow: "auto",
+              height: "100vh",
+              position: "fixed",
+              left: 0,
+            }}
+          >
             <LeftNav></LeftNav>
           </Sider>
-          <Layout>
+          <Layout style={{ marginLeft: 200 }}>
             <Header></Header>
             <Content
               style={{
