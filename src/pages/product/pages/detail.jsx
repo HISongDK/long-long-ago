@@ -2,6 +2,7 @@ import { Button, Card, List } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import { reqCategory } from "../../../api";
+import { IMGS_URL } from "../../../utils/constants";
 
 function Detail(props) {
   // 定义状态
@@ -12,7 +13,7 @@ function Detail(props) {
     name,
     price,
     desc,
-    img,
+    imgs,
     detail,
     pCategoryId,
     categoryId,
@@ -44,8 +45,9 @@ function Detail(props) {
           reqCategory(pCategoryId),
           reqCategory(categoryId),
         ]);
-        const pcName = result[1].data.name;
-        const cName = result[2].data.name;
+        const pcName = result[0].data.name;
+        const cName = result[1].data.name;
+        // 上面数组我怎么从 索引1 开始取值了,肯定是[0]开始啊
         setPcName(pcName);
         setcName(cName);
         console.log(result);
@@ -72,45 +74,36 @@ function Detail(props) {
       <Card title={title}>
         <List>
           <Item>
-            <div>
-              <span className="list-left">商品名称:</span>
-              <span>{name}</span>
-            </div>
+            <span className="list-left">商品名称:</span>
+            <span>{name}</span>
           </Item>
           <Item>
-            <div>
-              <span className="list-left">商品描述:</span>
-              <span>{desc}</span>
-            </div>
+            <span className="list-left">商品描述:</span>
+            <span>{desc}</span>
           </Item>
           <Item>
-            <div>
-              <span className="list-left">商品价格:</span>
-              <span>{price}</span>
-            </div>
+            <span className="list-left">商品价格:</span>
+            <span>{price}</span>
           </Item>
           <Item>
-            <div>
-              <span className="list-left">所属分类:</span>
-              <span>
-                {pcName}
-                {cName ? "-->" + cName : ""}
-              </span>
-            </div>
+            <span className="list-left">所属分类:</span>
+            <span>
+              {pcName}
+              {cName ? "-->" + cName : ""}
+            </span>
           </Item>
           <Item>
-            <div>
-              <span className="list-left">商品图片:</span>
-              <span>
-                <img src={img} alt="" />
-              </span>
-            </div>
+            <span className="list-left">商品图片:</span>
+            <span>
+              {/*  http://localhost:5000/upload/image-1613055276329.jpg  */}
+              {imgs.map((i) => (
+                <img src={IMGS_URL + i} alt={i} key={i} className="images" />
+              ))}
+            </span>
           </Item>
           <Item>
-            <div>
-              <span className="list-left">商品详情:</span>
-              <span dangerouslySetInnerHTML={{ __html: detail }}></span>
-            </div>
+            <span className="list-left">商品详情:</span>
+            <span dangerouslySetInnerHTML={{ __html: detail }}></span>
           </Item>
         </List>
       </Card>

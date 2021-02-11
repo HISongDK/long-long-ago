@@ -92,7 +92,7 @@ git init                        //初始化
 git add .                       //添加暂存区
 git commit -m ''                //提交版本库
 GitHub上新建仓库                 //根据页面提示连接远程版本库提交
-git checkout -b dev             //创建并切换分支[是从提交的版本库中新建并切换的分支,所以确保主分支先提交更改再建分支]
+`git checkout -b dev`           //创建并切换分支[是从提交的版本库中新建并切换的分支,所以确保主分支先提交更改再建分支]
 ```
 
 ### 项目基本目录结构
@@ -273,19 +273,21 @@ yarn add react-router-dom        //安装react-router-dom
 
 4. 商品详情页
    - 也是通过 Table 组件 columns 的 render 函数属性直接获取本行数据
-   * 函数式跳转 pathname+state传参+location.state获取
+   * 函数式跳转 pathname+state 传参+location.state 获取
    - 使用的 Card 组件,List 组件,组件中使用 html 标签,自定义样式
    * 商品详情中 有商品所属分类的信息,如果是二级分类的商品,需要获取两个分类信息
-        * 调用两次接口,如果只使用await,会依次执行,发送请求,效率不高
-        * 需要使用 Promise.all([]) 方法同时发送请求。
-        * all方法前面使用 await ,获取结果数组
+     - 调用两次接口,如果只使用 await,会依次执行,发送请求,效率不高
+     - 需要使用 Promise.all([]) 方法同时发送请求。
+     - all 方法前面使用 await ,获取结果数组
 5. 商品状态更新(上架/下架)
-   * 还是render获取数据
-   * 调用接口,改变status值,主要就是用了一下三目运算符,给status赋值
+   - 还是 render 获取数据
+   - 调用接口,改变 status 值,主要就是用了一下三目运算符,给 status 赋值
 6. 解决路由文件没有包括的路由配置,所有菜单项不会`自动展开`和`选中`。
-    * 因为获取展开和选中的key逻辑无法兼容这个
-    * 把默认选中的本来值是`整个路径`对应路由文件中设置文 key 值得path,所以可以设置一个判断,if(path.indexOf("/product")===0) path='/product'
-    * 默认展开是用的... 记不清了,不过也按照上面的思路改一下就行了
+   - 因为获取展开和选中的 key 逻辑无法兼容这个
+   - 把默认选中的本来值是`整个路径`对应路由文件中设置文 key 值得 path,所以可以设置一个判断,if(path.indexOf("/product")===0) path='/product'
+   - 默认展开是用的... 记不清了,不过也按照上面的思路改一下就行了
+
 ## 添加商品
 
 1. 添加页面静态布局
+   - Card Form Input

@@ -56,7 +56,13 @@ function ProductHome(props) {
           >
             详情
           </Button>
-          <Button type="link">修改</Button>
+          <Button
+            onClick={() => props.history.push("/product/add", rowProduct)}
+            // state 传参,直接第一个参数pathname,第二个参数state
+            type="link"
+          >
+            修改
+          </Button>
         </>
       ),
     },
