@@ -35,7 +35,8 @@ export default class Admin extends Component {
       <>
         <Layout
           style={{
-            height: "100%",
+            minHeight: "100%",
+            // minHeight 就是好用啊,我都不知道是不是这的问题,改一下就好了
             overflow: "auto",
           }}
         >

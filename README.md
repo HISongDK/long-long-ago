@@ -291,3 +291,12 @@ yarn add react-router-dom        //安装react-router-dom
 
 1. 添加页面静态布局
    - Card Form Input
+     - 表单项宽度,通过`labelCol和wrapperCol配置对象[属性]`控制,对象内属性名为 span 对应数字属性值
+     * TextArea 组件通过`autoSize`属性设置高度,可设置最大最小行
+     * Input 组件有 addonAfter/Before 属性,可以给输入框添加样式前缀
+   - Cascader 级联组件,数据源中 isLeaf 属性,如果叶子,则无子选项
+   - From onFinish 回调需要 Button 组件的 htmlType 为 submit,且数据校验通过,**尤其注意自定义校验,promise 对象是否返回成果状态,调用 resolve**
+2. 修改组件,数据回显
+3. 级联也挺复杂,就是记不清了
+4. 图片上传组件以及修改组件中图片回显
+5. **富文本编辑器**

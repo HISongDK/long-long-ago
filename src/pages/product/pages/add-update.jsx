@@ -1,7 +1,9 @@
 import { Button, Card, Form, Input, Cascader } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { reqCategorys } from "../../../api/index";
+import PicturesWall from "../components/upload-img";
+import RichTextEditor from "../components/rich-text-editor";
 
 const { Item } = Form;
 const { TextArea } = Input;
@@ -11,6 +13,8 @@ const { TextArea } = Input;
 const optionLists = [];
 
 function AddUpdate(props) {
+  // 通过 ref 绑定组件获取子组件,调用子组件方法获取子组件的数据
+  const PicturesRef = useRef(null);
   /* 
     根据state判断是否是修改
   */
@@ -26,11 +30,12 @@ function AddUpdate(props) {
   /* 
     表单数据 获取
   */
-  // function onFinish(values) {
-  //   console.log("success", values);
-  // }
   function onFinish(values) {
-    console.log("什么玩意", values);
+    console.log("success", values);
+    console.log(PicturesRef.current);
+    let imgs = PicturesRef.current.getNameList();
+    // useRef 直接写绑定好的refcontainer名字的话或报红 不懂不过不是代码问题
+    console.log(imgs);
   }
   /* 
     级联列表相关状态和回调
@@ -95,13 +100,14 @@ function AddUpdate(props) {
       }
       setOptions(optionsArr);
     })();
-  }, []);
+    // 依旧是下面这个依赖项,我还是搞不太明白,就是按照系统提示写的
+  }, [product.pCategoryId]);
   /* 
     定义 Form.Item 的布局 配置对象
   */
   const ItemLayout = {
-    labelCol: { span: "3" },
-    wrapperCol: { span: "8" },
+    labelCol: { span: "4" },
+    wrapperCol: { span: "10" },
   };
   /* 
     自定义价格校验函数    
@@ -144,12 +150,13 @@ function AddUpdate(props) {
       >
         <Form
           initialValues={
-            product
-              ? {
+            product.name
+              ? // 本来是直接判断 product 的,但是我怕报错,如果product没有值,就给赋值为一个空对象,但是忘了空对象布尔值是 true
+                // 所以永远都走不了 后面的
+                {
                   name: product.name,
                   desc: product.desc,
                   price: product.price,
-                  category: cascaderArr,
                 }
               : null
           }
@@ -163,7 +170,7 @@ function AddUpdate(props) {
             rules={[{ required: true, message: "此项必填" }]}
             // Form.item 校验必须要有 name 属性才行
           >
-            <Input></Input>
+            <Input placeholder="请输入商品名称"></Input>
           </Item>
           <Item
             name="desc"
@@ -184,28 +191,40 @@ function AddUpdate(props) {
               { validator: (rule, value) => validator(rule, value) },
             ]}
           >
-            <Input type="number" addonAfter="元"></Input>
+            <Input
+              placeholder="请输入商品价格"
+              type="number"
+              addonAfter="元"
+            ></Input>
           </Item>
           <Item
             name="category"
             label="商品分类"
             rules={[{ required: true, message: "此项必填" }]}
+            initialValue={product.name ? cascaderArr : null}
+            /* 
+              这地方一直都判断错了 , 只有级联
+            */
           >
             <Cascader
               options={options} // 需要显示的数据
               loadData={loadData} // 选中一级列表后,加载二级数据的回调
-              // onChange={onChange}
-              // changeOnSelect
+              placeholder="请选择商品分类"
             />
           </Item>
           <Item name="img" label="商品图片">
-            <Input></Input>
+            <PicturesWall ref={PicturesRef} product={product} />
           </Item>
           <Item name="detail" label="商品详情">
-            <Input></Input>
+            {/* 富文本编辑器 */}
+            <RichTextEditor></RichTextEditor>
           </Item>
-          <Item>
-            <Button htmlType="submit" type="primary">
+          <Item wrapperCol={{ offset: "4" }}>
+            <Button
+              htmlType="submit"
+              type="primary"
+              // style={{ marginLeft: "20px" }}
+            >
               提交
             </Button>
           </Item>

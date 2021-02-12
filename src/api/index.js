@@ -51,6 +51,7 @@ export const reqUpdateCategory = ({ categoryId, categoryName }) =>
 // 请求商品(分页)
 export const reqProducts = (pageNum = 1, pageSize = PAGE_SIZE) =>
   ajax(BASE_URL + "/manage/product/list", { pageNum, pageSize }); // 我是真不长记性啊 ,封装的请求函数又忘了返回值,记住啊,函数的参数和返回值都是要好好想想的啊
+
 /* 
   搜索商品分页列表(通过商品描述/名称)
   searchType 指定 productName || productDesc
@@ -78,7 +79,9 @@ export const reqUpdateStatus = (productId, status) =>
     { productId, status },
     "POST"
   );
-
+// 删除图片
+export const reqDeleteImg = (name) =>
+  ajax(BASE_URL + "/manage/img/delete", { name }, "post");
 /* 
   
   
