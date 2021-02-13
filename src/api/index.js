@@ -82,6 +82,20 @@ export const reqUpdateStatus = (productId, status) =>
 // 删除图片
 export const reqDeleteImg = (name) =>
   ajax(BASE_URL + "/manage/img/delete", { name }, "post");
+// 上传 添加商品
+// 我也是才发现我个傻憨憨 搁着还加BASE_URl,明明都用的是代理
+export const reqAddProduct = (productInfo) =>
+  productInfo._id
+    ? ajax(BASE_URL + "/manage/product/update", productInfo, "post")
+    : ajax(BASE_URL + "/manage/product/add", productInfo, "post");
+// 获取角色列表
+export const reqRoleList = () => ajax(BASE_URL + "/manage/role/list");
+// 添加角色
+export const reqAddRole = ({ roleName }) =>
+  ajax(BASE_URL + "/manage/role/add", { roleName }, "post");
+// 更新角色(给角色设置权限)
+export const reqUpdateRole = (roleInfo) =>
+  ajax(BASE_URL + "/manage/role/update", roleInfo, "post");
 /* 
   
   

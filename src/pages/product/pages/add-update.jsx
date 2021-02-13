@@ -1,7 +1,7 @@
-import { Button, Card, Form, Input, Cascader } from "antd";
+import { Button, Card, Form, Input, Cascader, message } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import React, { useEffect, useRef, useState } from "react";
-import { reqCategorys } from "../../../api/index";
+import { reqAddProduct, reqCategorys } from "../../../api/index";
 import PicturesWall from "../components/upload-img";
 import RichTextEditor from "../components/rich-text-editor";
 
@@ -15,13 +15,16 @@ const optionLists = [];
 function AddUpdate(props) {
   // 通过 ref 绑定组件获取子组件,调用子组件方法获取子组件的数据
   const PicturesRef = useRef(null);
+  const editor = useRef();
   /* 
     根据state判断是否是修改
   */
   const product = props.location.state || {};
+  console.log(product);
   // 设置级联默认显示数组
   const cascaderArr = [];
-  if (product.pCategoryId === 0) {
+  if (product.pCategoryId === "0") {
+    // 判断这种一个数字的字符串要谨慎啊, 有弄错了一次
     cascaderArr.push(product.categoryId);
   } else {
     cascaderArr.push(product.pCategoryId);
@@ -30,12 +33,61 @@ function AddUpdate(props) {
   /* 
     表单数据 获取
   */
-  function onFinish(values) {
+  async function onFinish(values) {
     console.log("success", values);
     console.log(PicturesRef.current);
-    let imgs = PicturesRef.current.getNameList();
     // useRef 直接写绑定好的refcontainer名字的话或报红 不懂不过不是代码问题
-    console.log(imgs);
+    // 通过 ref 绑定组件 获取节点 调用子组件方法 获取子组件数据
+    let imgs = PicturesRef.current.getNameList();
+    let detail = editor.current.getDetail();
+    // 获取上传数据信息
+    const { name, price, desc, category } = values;
+    // const pCategoryId = category[0];
+    // let categoryId;
+    // if (category[1]) {
+    //   categoryId = category[1];
+    // }
+    let pCategoryId = "0";
+    let categoryId;
+    if (category[1]) {
+      pCategoryId = category[0];
+      categoryId = category[1];
+    } else {
+      categoryId = category[0];
+    }
+    // 生成添加商品函数所需参数对象
+    let productInfo = {
+      pCategoryId,
+      categoryId,
+      name,
+      price,
+      desc,
+      imgs,
+      detail,
+    };
+    // 获取更新商品时的 商品Id
+    const _id = product._id;
+    let result;
+    if (_id) {
+      productInfo._id = _id;
+      result = await reqAddProduct(productInfo);
+      console.log(result);
+      if (result.status === 0) {
+        message.success("更新商品成功");
+        props.history.goBack();
+      } else {
+        message.error("更新商品失败");
+      }
+    } else {
+      result = await reqAddProduct(productInfo);
+      console.log(result);
+      if (result.status === 0) {
+        message.success("上传商品成功");
+        props.history.goBack();
+      } else {
+        message.error("上传商品失败");
+      }
+    }
   }
   /* 
     级联列表相关状态和回调
@@ -85,13 +137,13 @@ function AddUpdate(props) {
       // 只有修改页面才先判断展示
       if (product.pCategoryId && product.pCategoryId !== "0") {
         const child = await reqCategorys(product.pCategoryId);
-        console.log(child);
+        // console.log(child);
         const childOptions = child.data.map((c) => ({
           value: c._id,
           label: c.name,
           isLeaf: true,
         }));
-        console.log(childOptions);
+        // console.log(childOptions);
         // 找出与之前商品对应的一级 option 对象
         let targetOptions = optionsArr.find(
           (c) => c.value === product.pCategoryId
@@ -215,9 +267,12 @@ function AddUpdate(props) {
           <Item name="img" label="商品图片">
             <PicturesWall ref={PicturesRef} product={product} />
           </Item>
-          <Item name="detail" label="商品详情">
+          <Item name="detail" label="商品详情" wrapperCol={{ span: 18 }}>
             {/* 富文本编辑器 */}
-            <RichTextEditor></RichTextEditor>
+            <RichTextEditor
+              ref={editor}
+              detail={product.detail}
+            ></RichTextEditor>
           </Item>
           <Item wrapperCol={{ offset: "4" }}>
             <Button

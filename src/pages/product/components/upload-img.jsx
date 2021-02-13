@@ -21,7 +21,6 @@ class PicturesWall extends React.Component {
     let fileList = [];
     if (product.name) {
       const imgs = product.imgs;
-      console.log(imgs, product);
       fileList = imgs.map((item, index) => ({
         uid: -index, // 文档说避免冲突 设成负的 index 机智
         name: item,
