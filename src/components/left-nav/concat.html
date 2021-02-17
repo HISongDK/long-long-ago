@@ -1,0 +1,17 @@
+<script>
+  function doSomething(agen, spea) {
+    agen.forEach((item, index) => {
+      spea.forEach((sItem) => {
+        if (item.speakerId === sItem.id) {
+          agen[index].speakerName = sItem.name;
+          delete agen[index].speakerId;
+        }
+      });
+    });
+    return agen;
+  }
+  const spea = [{ id: "123", name: "张三" }];
+  const agen = [{ id: "1", speakerId: "123" }];
+  let newArr = doSomething(agen, spea);
+  console.log(newArr);
+</script>
