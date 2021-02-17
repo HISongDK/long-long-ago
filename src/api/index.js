@@ -35,6 +35,9 @@ export const reqAddUser = (user) =>
     user,
     "post"
   );
+// 更新用户
+export const reqUpdateUser = (user) =>
+  ajax(BASE_URL + "manage/user/update", user, "post");
 // 获取分类
 export const reqCategorys = (parentId) =>
   ajax(BASE_URL + "/manage/category/list", { parentId });
@@ -96,6 +99,14 @@ export const reqAddRole = ({ roleName }) =>
 // 更新角色(给角色设置权限)
 export const reqUpdateRole = (roleInfo) =>
   ajax(BASE_URL + "/manage/role/update", roleInfo, "post");
+// 获取所有 用户 列表
+export const reqUserList = () => ajax(BASE_URL + "/manage/user/list");
+// 删除用户
+export const reqDeleteUser = (userId) =>
+  ajax(BASE_URL + "/manage/user/delete", { userId }, "post");
+// 添加用户 最上面已经写过了
+// export const reqAddUser = () =>
+//   ajax(BASE_URL + "/manage/user/add", userInfo, "post");
 /* 
   
   

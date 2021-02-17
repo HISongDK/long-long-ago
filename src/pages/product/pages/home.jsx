@@ -164,6 +164,7 @@ function ProductHome(props) {
           rowKey="_id" // 指定每行 key 值对应的数据源中属性名
           // 分页器
           pagination={{
+            current: pn, // 有个bug 需要设置这个属性
             total,
             showQuickJumper: true,
             pageSize: PAGE_SIZE,

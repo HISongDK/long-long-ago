@@ -3,6 +3,9 @@ import { Card, Button, Table, message, Modal } from "antd";
 import { reqAddRole, reqRoleList, reqUpdateRole } from "../../api";
 import AddForm from "./components/add-form";
 import AuthForm from "./components/auth-form";
+import memoryUtil from "../../utils/memoryUtil";
+import timeFormat from "../../utils/timeFormatUtil";
+import storage from "../../utils/storageUtil";
 
 class Role extends Component {
   constructor(props) {
@@ -25,10 +28,12 @@ class Role extends Component {
       {
         title: "创建时间",
         dataIndex: "create_time",
+        render: timeFormat,
       },
       {
         title: "授权时间",
         dataIndex: "auth_time",
+        render: timeFormat,
       },
       {
         title: "授权人",
@@ -39,10 +44,17 @@ class Role extends Component {
   // 定义获取角色列表函数
   getRoles = async () => {
     const result = await reqRoleList();
-    console.log(result);
+    // console.log(result);
     if (result.status === 0) {
+      // let roles = result.data.map((item, index) => ({
+      //   ...item,
+      //   create_time: timeFormat(item.create_timer),
+      //   auth_time: timeFormat(item.auth_time),
+      // }));
+      // 时间格式修改之后,后面修改权限获取的数据也是修改之后的数据了,所以设定权限时候会失败
+      let roles = result.data;
       this.setState({
-        roles: result.data,
+        roles,
       });
     } else {
       message.success("获取角色列表失败");
@@ -55,9 +67,9 @@ class Role extends Component {
   // 确定添加角色回调
   onAddOk = async () => {
     let addRoleName = this.addForm.getFieldsValue();
-    console.log(addRoleName);
+    // console.log(addRoleName);
     const result = await reqAddRole(addRoleName);
-    console.log(result);
+    // console.log(result);
     if (result.status === 0) {
       message.success("添加角色成功");
       this.setState((state) => ({
@@ -77,14 +89,26 @@ class Role extends Component {
     const { menus } = AuthForm.state;
     const roleInfo = { ...this.state.role };
     roleInfo.menus = menus;
+    roleInfo.auth_name = memoryUtil.user.username;
+    console.log(roleInfo);
     const result = await reqUpdateRole(roleInfo);
-    console.log(result);
+    // console.log(result);
     if (result.status === 0) {
-      message.success("修改权限成功");
-      // 修改权限后重新获取 角色列表
-      // this.getRoles();
-      this.setState({ isShowModal: 0, role: result.data });
-      // 这个地方要更新一下状态,我也是找了好长时间啊
+      // 如果更新的是当前用户的权限 , 则强制退出
+      if (memoryUtil.user.role_id === roleInfo._id) {
+        // 这个判断我是真拿不准,直接看来用的
+        // 强制退出前先清数据
+        memoryUtil.user = {};
+        storage.removeUser();
+        this.props.history.replace("/login");
+        message.info("当前用户角色权限更新,请重新登录");
+      } else {
+        message.success("修改权限成功");
+        // 修改权限后重新获取 角色列表
+        this.getRoles();
+        this.setState({ isShowModal: 0, role: result.data });
+        // 这个地方要更新一下状态,我也是找了好长时间啊
+      }
     } else {
       message.error("修改权限失败");
     }
@@ -92,7 +116,7 @@ class Role extends Component {
   // 定义Table组件onRow
   onRow = (role) => ({
     onClick: (event) => {
-      console.log(role);
+      // console.log(role);
       this.setState({ role });
     },
   });
@@ -139,6 +163,12 @@ class Role extends Component {
             type: "radio",
             columnWidth: 64,
             selectedRowKeys: [role._id], // 真是三翻四抖啊,Table行的回调事件获取参数(这一行的数据),里面的单击的回调里面,把这行的数据更新到状态里,这再设置选中的key值
+            // 因为选中那行的 key 值 就是那一行数据中的 _id 的值,所以把选中行的数据更新到 state 中, 然后再把里面的 _id 设置为单选选中的 key值
+            onSelect: (role) => {
+              // 不明白为什么这个 状态有值了 单选框才会被选中
+              this.setState({ role });
+              // 啊 是我自己设置的的选中的 key 值是 role 状态中的 _id
+            },
           }}
           onRow={this.onRow}
           dataSource={roles}

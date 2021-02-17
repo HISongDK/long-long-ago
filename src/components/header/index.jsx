@@ -5,7 +5,7 @@ import timeFormat from "../../utils/timeFormatUtil";
 import { reqWeather } from "../../api";
 import { withRouter } from "react-router-dom";
 import menuList from "../../config/menuConfig";
-import { Modal } from "antd";
+import { Button, Modal } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import storageUtils from "../../utils/storageUtil";
 import memoryUtil from "../../utils/memoryUtil";
@@ -73,8 +73,10 @@ function Header(props) {
     <div className="header">
       <div className="top">
         <div className="innTop">
-          欢迎: <span>{user.user.username}</span> !{" "}
-          <span onClick={modalConfirm}>退出</span>
+          欢迎: <span className="user">{user.user.username}</span> !{" "}
+          <Button onClick={modalConfirm} type="link">
+            退出
+          </Button>
         </div>
       </div>
       <div className="bottom">
