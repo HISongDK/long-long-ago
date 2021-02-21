@@ -21,9 +21,9 @@
 
 | 序号 | 前台             | 后台        | 交互                                      | 模块化   | 项目构建        | 其他                                                                  |
 | ---- | ---------------- | ----------- | ----------------------------------------- | -------- | --------------- | --------------------------------------------------------------------- |
-| 1    | react            | node        | `ajax请求`                                | ES6      | webpack         | `富文本编辑器`                                                        |
-| 2    | react-router-dom | mongodb     | 1.axios `2.jsonp` 3.promise `async` await | commonJS | creat-react-app | **`1`**. react-draft-wysiwyg **`2`**. draft-js **`3`**. draft-to-html |
-| 3    | antd             | mongoose    | `接口测试工具`                            |          | eslint          | `图表库`                                                              |
+| 1    | react            | node        | ajax请求                                | ES6      | webpack         | 富文本编辑器                                                        |
+| 2    | react-router-dom | mongodb     | 1.axios 2.jsonp 3.promise async await | commonJS | creat-react-app | 1. react-draft-wysiwyg 2. draft-js 3. draft-to-html |
+| 3    | antd             | mongoose    | 接口测试工具`                            |          | eslint          | 图表库                                                              |
 | 4    | redux            | multer      | postman                                   |          |                 | 1. echarts 2. echarts-for-react                                       |
 | 5    |                  | blueimp-md5 |                                           |          |                 |
 
@@ -304,3 +304,94 @@ yarn add react-router-dom        //安装react-router-dom
 - 这是个天坑啊
 
 ## 角色管理
+* 依旧是使用 Card Table 组件展示  
+    * card 组件 title 有一个添加角色的button 和一个 修改角色权限的button
+    * table 要设置单选框 有属性可以做到
+    * 有 角色项 选中才不禁用修改权限的button
+## 用户管理
+* 添加用户用 Modal里的Form
+* 修改用户跟添加用同一个组件
+* 角色权限显示 Link 组件,是map+递归生成结构的时候加一层判断
+    * 判断有四种情况是当前项需要生成结构的
+      1. admin 可以访问所有路径
+      2. 公开的页面(比如首页)可以直接访问
+      3. 子路由包括在权限里面,否则父路由直接pass,子路由也显示不出来了
+      4. 权限中包含的路由
+***
+## redux 使用
+### 原因
+**`有多个组件需要使用到相同的数据,如: user 信息(本来用的自定义的memory中转保存) 以及当前页面标题，在点击的时候就确定了，不必再遍历查询获取`**
+### redux 是什么
+1. 专门做状态管理的 JS 库
+2. 可适配三大框架,不过基本搭配 react 使用
+3. 作用: 集中管理 react 应用中,多个组件共享的状态
+4. 开发: 与 react-redux 、redux-thunk 等插件配合使用
+### redux 具体使用
+```js
+yarn add redux // 安装 redux
+// 核心
+1. store
+2. action
+3. reducer
+
+// 核心api
+createStore() // 参数传入 reducer
+// 核心方法
+getState()  // 获取 state
+dispatch(action) // 分发 action 触发reducer调用,产生新 state
+subscribe(listener) // 注册监听,产生了新的 state 时,自动调用
+// 编码
+store.getState()
+store.dispatch({type:"INCREMENT",number})
+store.subscribe(render)
+```
+* 要点:
+  1. react 各组件需要 **读/写** redux 中的状态
+  2. store 是redux 的核心组成部分。组件读取数据就是从 store 读取
+  3. 更新更改 store 中的数据
+    > dispatch(action) // 提交描述对象
+    > reducer 函数接收 旧状态previousState 和行为action 生成新状态newState
+### react-redux 的使用
+```js
+1. Provider 组件
+// 让所有组件都能得到 state 数据
+<Provider store={store}>
+  <App/>
+</Provider>
+
+2. connect()
+// 用于包装 UI 组件,生成容器组件
+connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Counter)
+
+3. mapStateToProps()
+// 函数: 将 state 数据转换为 UI 组件的标签属性
+```
+#### 问题
+> 1. redux 默认不能进行异步处理
+> 2. 需要在 redux 中执行异步任务(ajax、定时器等)  
+
+例: 不在组件中定时提交 dispatch 触发reducer,而是在 dispatch 中设置定时器,延时返回 action 触发reducer 处理.但是做不到返回值是一个对象,因为里面的返回值,是延时器执行函数的返回值,而延时器本身没有返回值
+
+
+## 数据可视化
+> **看文档写就行,结构直接复制,剩下就是数据变动**
+* echarts(b)
+    * echarts-for-react
+* G2(a)
+    * **bizcharts**: react 中推荐使用基于react包装的G2开源库 `bizcharts`
+    * 需要额外安装 `@antv/data-set`
+## 生产环境跨域问题
+1. 后台服务和前台应用同服务器,`无跨域问题`
+    > 如前台 npm run build 打包好的 build 文件放入后台应有 public 文件夹下
+    后台应用运行时,可以直接访问该端口号,展示的就是前台应用
+    因为是相同端口,发 ajax 请求,所以不存在跨域问题
+2. 不同服务器运行前后台程序
+    1. 后台使用 cors 解决跨域
+    2. 使用 ngnix 解决(一个还行的选择)  
+    `不用管跨域了,还是后台解决吧`
+### BrowserRouter 路由模式问题
+> 根路径后的 path 会被当做后台路由处理,所以刷新会出现404的问题,需要后台处理
+

@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import "./index.less";
-import user from "../../utils/memoryUtil";
+// import user from "../../utils/memoryUtil";
 import timeFormat from "../../utils/timeFormatUtil";
 import { reqWeather } from "../../api";
 import { withRouter } from "react-router-dom";
-import menuList from "../../config/menuConfig";
+// import menuList from "../../config/menuConfig";
 import { Button, Modal } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import storageUtils from "../../utils/storageUtil";
-import memoryUtil from "../../utils/memoryUtil";
+// import memoryUtil from "../../utils/memoryUtil";
+const BASE_URL = "http://localhost:3000";
 
 function Header(props) {
   // 定时获取时间
@@ -33,27 +34,8 @@ function Header(props) {
       setWea(weather.wea);
     })();
   }, []);
-  // 获取当前页面名
-  const [title, setTitle] = useState("");
-
-  useEffect(() => {
-    const path = props.location.pathname;
-    menuList.forEach((item) => {
-      if (item.key === path) {
-        setTitle(item.title);
-      } else if (item.children) {
-        // item.children.forEach((innerItem) => {
-        //   if (innerItem.key === path) {
-        //     setTitle(innerItem.title);
-        //   }
-        // });
-        let flag = item.children.find((innerItem) => innerItem.key === path);
-        if (flag) {
-          setTitle(flag.title);
-        }
-      }
-    });
-  }, [props.location.pathname]);
+  // 使用 redux 状态中保存的 当前页面名 不需要通过 url 路径判断 路由信息中查询
+  const titleInRedux = props.title;
 
   // 退出弹框
   function modalConfirm() {
@@ -64,7 +46,9 @@ function Header(props) {
       cancelText: "取消",
       onOk: function () {
         storageUtils.removeUser();
-        memoryUtil.user = {};
+        // memoryUtil.user = {};
+        // 清楚 redux 中的 user 信息
+        props.deleteUserOfRedux();
         props.history.replace("/login");
       },
     });
@@ -73,17 +57,22 @@ function Header(props) {
     <div className="header">
       <div className="top">
         <div className="innTop">
-          欢迎: <span className="user">{user.user.username}</span> !{" "}
+          欢迎: <span className="user">{props.user.username}</span> !{" "}
           <Button onClick={modalConfirm} type="link">
             退出
           </Button>
         </div>
       </div>
       <div className="bottom">
-        <div className="path-title">{title}</div>
+        <div className="path-title">{titleInRedux}</div>
         <div className="time-weather">
           <span>{time}</span>
-          <img src="" alt={`[${wea_img}]`} />
+          {wea_img ? (
+            <img
+              src={BASE_URL + `/images/${wea_img}.png`}
+              alt={`[${wea_img}]`}
+            />
+          ) : null}
           <span>{wea}</span>
         </div>
       </div>
