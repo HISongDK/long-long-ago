@@ -1,32 +1,32 @@
 import React, { Component } from "react";
-import { Form, Input, Button, message } from "antd";
+import { Form, Input, Button } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
-import memoryUtil from "../../utils/memoryUtil";
-import store from "../../utils/storageUtil";
+// import memoryUtil from "../../utils/memoryUtil";
 import "./login.less";
 
-import { reqLogin } from "../../api/index";
 import { Redirect } from "react-router-dom";
 
-export default class Login extends Component {
+// redux
+import { connect } from "react-redux";
+import { login } from "../../redux/actions";
+
+class Login extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
   onFinish = async (values) => {
     console.log("Received values of form: ", values);
     const { username, password } = values;
-    let result = await reqLogin(username, password);
-    console.log("请求成功", result);
-    if (result.status === 0) {
-      message.success("登录成功", 0.8);
-      //-----------先保存一下用户信息
-      memoryUtil.user = result.data;
-      store.setUser(result.data);
-      this.props.history.replace("/");
-    } else {
-      message.error(result.msg, 0.8);
-    }
+    /////////////////// 调用分发异步 action 的函数 ==> 发登录的异步请求,有了结果后更新状态
+    // console.log(this.props);
+    this.props.login(username, password);
   };
   render() {
+    const { errorMsg } = this.props.user;
     // 如果用户已经登录，自动跳转到 admin 页面
-    const user = memoryUtil.user;
+    // const user = memoryUtil.user;
+    const user = this.props.user;
     if (user && user._id) {
       return <Redirect to="/" />;
     }
@@ -35,6 +35,7 @@ export default class Login extends Component {
         <header className="login-header"></header>
         <section className="login-content">
           <h1>用户登录</h1>
+
           <div className="form">
             <Form
               name="normal_login"
@@ -101,6 +102,7 @@ export default class Login extends Component {
                   登录
                 </Button>
               </Form.Item>
+              <p style={{ textAlign: "center", color: "red" }}>{errorMsg}</p>
             </Form>
             {/* ); 我说怎么有问题,多复制了一行 留记 */}
           </div>
@@ -109,6 +111,7 @@ export default class Login extends Component {
     );
   }
 }
+export default connect((state) => ({ user: state.user }), { login })(Login);
 /**
  * async await
  * 1. 作用

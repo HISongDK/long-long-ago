@@ -13,7 +13,8 @@ function AddUpdateUser(props) {
   useEffect(() => {
     console.log(addUpdateForm);
     props.setForm(addUpdateForm.current);
-  }, []);
+    // 依赖项依旧是按照提示填的
+  }, [props]);
   return (
     <Form
       ref={addUpdateForm}

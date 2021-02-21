@@ -3,7 +3,13 @@ import { Menu } from "antd";
 
 import "./index.less";
 import menuList from "../../config/menuConfig";
-import memoryUtil from "../../utils/memoryUtil";
+// import memoryUtil from "../../utils/memoryUtil";
+// 使用connect包起来生成容器组件
+import { connect } from "react-redux";
+import { changeTitle } from "../../redux/actions";
+// 引入 redux中的store 用于dispact
+// 引入 action 中的action creators工厂函数
+// import store from "../../redux/store";
 const { SubMenu } = Menu;
 
 function LeftNav(props) {
@@ -19,20 +25,11 @@ function LeftNav(props) {
   // 定义筛选生成路由的判断函数
   function hasAuth(item) {
     const { key, isPublic, children } = item;
-    const { menus } = memoryUtil.user.role;
-    const { username } = memoryUtil.user;
+    // const { menus } = memoryUtil.user.role;
+    // const { username } = memoryUtil.user;
+    const { menus } = props.user.role;
+    const { username } = props.user;
 
-    // if (memoryUtil.user.username === "admin") {
-    //   // 用户为 admin 时,显示所有路径
-    //   return true;
-    // } else if (item.isPublic) {
-    //   // 如果此 item 有 isPublic 属性 说明是公开的 也是直接返回true
-    //   return true;
-    // } else {
-    //   if (menus.indexOf(key) > -1) return true;
-    //   // 只有权限包括的路由才 返回true 进一步处理 返回菜单项链接结构
-    //   return false;
-    // }
     // 以上注释的简写
     if (username === "admin" || isPublic || menus.indexOf(key) > -1)
       return true;
@@ -59,11 +56,26 @@ function LeftNav(props) {
     return menuList.map((item) => {
       if (hasAuth(item)) {
         // 判断登录用户包含的权限含有的 路径才生成链接 返回结构
+
+        // redux 的title 初始值在刷新的时候,不过什么页面都显示的,写好的固定值. 要避免这个问题.
+        // 在遍历生成结构的时候, 判断当前 item 是不是页面当前的路由项,如果是就直接改变 redux 中title的值
+        const path = props.location.pathname;
+        if (item.key === path || item.key.indexOf(path) > -1)
+          props.changeTitle(item.title);
+
+        // 判断 分支 递归 生成结构
         if (!item.children) {
           return (
             <Menu.Item key={item.key} icon={<item.icon />}>
               {/* antd4 的图表组件,一定要带上尖角号,不过没想到这样不用字符串拼接也能行 */}
-              <Link to={item.key}>{item.title}</Link>
+              <Link onClick={() => props.changeTitle(item.title)} to={item.key}>
+                {/* 
+                    确实是不知道为什么:
+                        没用 容器组件包起来 通过mapDispatch 传入 UI 组件dispatch的时候,确实是不行,状态乱变,固定最后一个
+                        包完 容器组件 用connect忘UI组件的props里传入mapDispatch然后再通过 props调用就没问题了
+                */}
+                {item.title}
+              </Link>
             </Menu.Item>
           );
         } else {
@@ -111,4 +123,6 @@ function LeftNav(props) {
   );
 }
 
-export default withRouter(LeftNav);
+export default connect((state) => ({ user: state.user }), { changeTitle })(
+  withRouter(LeftNav)
+);

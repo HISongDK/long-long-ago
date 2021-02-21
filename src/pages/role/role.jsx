@@ -3,9 +3,11 @@ import { Card, Button, Table, message, Modal } from "antd";
 import { reqAddRole, reqRoleList, reqUpdateRole } from "../../api";
 import AddForm from "./components/add-form";
 import AuthForm from "./components/auth-form";
-import memoryUtil from "../../utils/memoryUtil";
-import timeFormat from "../../utils/timeFormatUtil";
+// import memoryUtil from "../../utils/memoryUtil";
 import storage from "../../utils/storageUtil";
+import timeFormat from "../../utils/timeFormatUtil";
+import { connect } from "react-redux";
+import { deleteUserOfRedux } from "../../redux/actions";
 
 class Role extends Component {
   constructor(props) {
@@ -89,16 +91,17 @@ class Role extends Component {
     const { menus } = AuthForm.state;
     const roleInfo = { ...this.state.role };
     roleInfo.menus = menus;
-    roleInfo.auth_name = memoryUtil.user.username;
+    roleInfo.auth_name = this.props.user.username;
     console.log(roleInfo);
     const result = await reqUpdateRole(roleInfo);
     // console.log(result);
     if (result.status === 0) {
       // 如果更新的是当前用户的权限 , 则强制退出
-      if (memoryUtil.user.role_id === roleInfo._id) {
+      if (this.props.user.role_id === roleInfo._id) {
         // 这个判断我是真拿不准,直接看来用的
         // 强制退出前先清数据
-        memoryUtil.user = {};
+        // memoryUtil.user = {};
+        this.props.deleteUserOfRedux();
         storage.removeUser();
         this.props.history.replace("/login");
         message.info("当前用户角色权限更新,请重新登录");
@@ -203,4 +206,6 @@ class Role extends Component {
   }
 }
 
-export default Role;
+export default connect((state) => ({ user: state.user }), {
+  deleteUserOfRedux,
+})(Role);
