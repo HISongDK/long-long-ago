@@ -1,5 +1,34 @@
 # 后台管理系统
 
+- [后台管理系统](#后台管理系统)
+  - [该从这个项目中学到什么](#该从这个项目中学到什么)
+  - [技术选型](#技术选型)
+  - [实际操作](#实际操作)
+    - [使用 creat-react-app 搭建项目](#使用-creat-react-app-搭建项目)
+    - [使用 Git/GitHub 建立远程版本库](#使用-gitgithub-建立远程版本库)
+    - [项目基本目录结构](#项目基本目录结构)
+    - [在 react 中使用 antd](#在-react-中使用-antd)
+    - [引入路由](#引入路由)
+    - [封装 ajax 请求模块](#封装-ajax-请求模块)
+    - [维持、自动登录 \ 封装 memory 工具模块以及 storage 工具模块](#维持自动登录--封装-memory-工具模块以及-storage-工具模块)
+    - [layout 布局组件、拆分侧边导航和头部组件](#layout-布局组件拆分侧边导航和头部组件)
+  - [侧边导航栏](#侧边导航栏)
+    - [右侧 Header 组件](#右侧-header-组件)
+    - [商品分类管理](#商品分类管理)
+  - [商品管理](#商品管理)
+  - [添加商品](#添加商品)
+  - [角色管理](#角色管理)
+  - [用户管理](#用户管理)
+  - [redux 使用](#redux-使用)
+    - [原因](#原因)
+    - [redux 是什么](#redux-是什么)
+    - [redux 具体使用](#redux-具体使用)
+    - [react-redux 的使用](#react-redux-的使用)
+      - [问题](#问题)
+  - [数据可视化](#数据可视化)
+  - [生产环境跨域问题](#生产环境跨域问题)
+    - [BrowserRouter 路由模式问题](#browserrouter-路由模式问题)
+
 ## 该从这个项目中学到什么
 
 1. 流程及开发方法
@@ -19,30 +48,35 @@
 
 ## 技术选型
 
-| 序号 | 前台             | 后台        | 交互                                      | 模块化   | 项目构建        | 其他                                                                  |
-| ---- | ---------------- | ----------- | ----------------------------------------- | -------- | --------------- | --------------------------------------------------------------------- |
-| 1    | react            | node        | ajax请求                                | ES6      | webpack         | 富文本编辑器                                                        |
+| 序号 | 前台             | 后台        | 交互                                  | 模块化   | 项目构建        | 其他                                                |
+| ---- | ---------------- | ----------- | ------------------------------------- | -------- | --------------- | --------------------------------------------------- |
+| 1    | react            | node        | ajax 请求                             | ES6      | webpack         | 富文本编辑器                                        |
 | 2    | react-router-dom | mongodb     | 1.axios 2.jsonp 3.promise async await | commonJS | creat-react-app | 1. react-draft-wysiwyg 2. draft-js 3. draft-to-html |
-| 3    | antd             | mongoose    | 接口测试工具`                            |          | eslint          | 图表库                                                              |
-| 4    | redux            | multer      | postman                                   |          |                 | 1. echarts 2. echarts-for-react                                       |
-| 5    |                  | blueimp-md5 |                                           |          |                 |
+| 3    | antd             | mongoose    | 接口测试工具`                         |          | eslint          | 图表库                                              |
+| 4    | redux            | multer      | postman                               |          |                 | 1. echarts 2. echarts-for-react                     |
+| 5    |                  | blueimp-md5 |                                       |          |                 |
 
 ---
 
 ---
 
 - 前台数据展现/交互/组件化
+  >
   > 1. react
   > 2. react-router-dom
   > 3. antd
   > 4. redux
+  >
 - 后台应用
+  >
   > 1. node
   > 2. mongodb
   > 3. mongoose
   > 4. multer
   > 5. blueimp-md5
+  >
 - 前后端交互
+  >
   > - ajax 请求
       1. axios
       2. jsonp
@@ -50,14 +84,19 @@
   > - 接口测试工具
       1. postman
 
-* 模块化
+- 模块化
+  >
   > 1. ES6
   > 2. CommonJS
-* 项目构建/工程化
+  >
+- 项目构建/工程化
+  >
   > 1. webpack
   > 2. creat-react-app
   > 3. eslint
-* 其他
+  >
+- 其他
+  >
   > 1. 富文本编辑器  
   >    a. react-draft-wysiwyg  
   >    b. draft-js  
@@ -170,7 +209,7 @@ yarn add react-router-dom        //安装react-router-dom
 
 - 首先使用自定义的 memory 模块作为数据中转，将登陆成功返回的用户信息，写入 memory 中的 user 对象，在 admin 页面中引入 memory 读取 user，如果`！user || ！user.id`,说明未登录（当然，也可能是忘记把 user 数据存入 memory 模块了）**这个是刷新值就丢了，很正常，毕竟没有持久储存。所以肯定还是要用 localStorage 的，而且用了 storage 还用这个感觉有点多余了。对理解这些数据传输可能有些用处**
 
-* 封装 storage 存储用户信息模块
+- 封装 storage 存储用户信息模块
   - 先使用原生的 localStorage 封装了一下
   - 又用了下 store.js 库封了一下（语法更简洁，不用自己来回 stringfy、parse 来回转格式）
   - **我现在更想练练的是通过`时间戳`给 localStorage 加上一个过期时间**
@@ -179,7 +218,7 @@ yarn add react-router-dom        //安装react-router-dom
 
 1. 挑一个布局一样的
 2. 把布局中，结构较复杂的拆出来，单独写成组件引入  
-    _ 小的样式改动直接 jsx 行内 style 两个大括号属性驼峰命名法就行
+    _小的样式改动直接 jsx 行内 style 两个大括号属性驼峰命名法就行
    _ 单组件的样式，就单在组件的文件夹中创建一个样式文件引入  
    `才想到,其实都是拆出去写的,内容区显示的是路由组件,肯定都是拆出去的`
 
@@ -273,9 +312,9 @@ yarn add react-router-dom        //安装react-router-dom
 
 4. 商品详情页
    - 也是通过 Table 组件 columns 的 render 函数属性直接获取本行数据
-   * 函数式跳转 pathname+state 传参+location.state 获取
+   - 函数式跳转 pathname+state 传参+location.state 获取
    - 使用的 Card 组件,List 组件,组件中使用 html 标签,自定义样式
-   * 商品详情中 有商品所属分类的信息,如果是二级分类的商品,需要获取两个分类信息
+   - 商品详情中 有商品所属分类的信息,如果是二级分类的商品,需要获取两个分类信息
      - 调用两次接口,如果只使用 await,会依次执行,发送请求,效率不高
      - 需要使用 Promise.all([]) 方法同时发送请求。
      - all 方法前面使用 await ,获取结果数组
@@ -292,8 +331,8 @@ yarn add react-router-dom        //安装react-router-dom
 1. 添加页面静态布局
    - Card Form Input
      - 表单项宽度,通过`labelCol和wrapperCol配置对象[属性]`控制,对象内属性名为 span 对应数字属性值
-     * TextArea 组件通过`autoSize`属性设置高度,可设置最大最小行
-     * Input 组件有 addonAfter/Before 属性,可以给输入框添加样式前缀
+     - TextArea 组件通过`autoSize`属性设置高度,可设置最大最小行
+     - Input 组件有 addonAfter/Before 属性,可以给输入框添加样式前缀
    - Cascader 级联组件,数据源中 isLeaf 属性,如果叶子,则无子选项
    - From onFinish 回调需要 Button 组件的 htmlType 为 submit,且数据校验通过,**尤其注意自定义校验,promise 对象是否返回成果状态,调用 resolve**
 2. 修改组件,数据回显
@@ -304,29 +343,40 @@ yarn add react-router-dom        //安装react-router-dom
 - 这是个天坑啊
 
 ## 角色管理
-* 依旧是使用 Card Table 组件展示  
-    * card 组件 title 有一个添加角色的button 和一个 修改角色权限的button
-    * table 要设置单选框 有属性可以做到
-    * 有 角色项 选中才不禁用修改权限的button
+
+- 依旧是使用 Card Table 组件展示
+  - card 组件 title 有一个添加角色的 button 和一个 修改角色权限的 button
+  - table 要设置单选框 有属性可以做到
+  - 有 角色项 选中才不禁用修改权限的 button
+
 ## 用户管理
-* 添加用户用 Modal里的Form
-* 修改用户跟添加用同一个组件
-* 角色权限显示 Link 组件,是map+递归生成结构的时候加一层判断
-    * 判断有四种情况是当前项需要生成结构的
-      1. admin 可以访问所有路径
-      2. 公开的页面(比如首页)可以直接访问
-      3. 子路由包括在权限里面,否则父路由直接pass,子路由也显示不出来了
-      4. 权限中包含的路由
-***
+
+- 添加用户用 Modal 里的 Form
+- 修改用户跟添加用同一个组件
+- 角色权限显示 Link 组件,是 map+递归生成结构的时候加一层判断
+  - 判断有四种情况是当前项需要生成结构的
+    1. admin 可以访问所有路径
+    2. 公开的页面(比如首页)可以直接访问
+    3. 子路由包括在权限里面,否则父路由直接 pass,子路由也显示不出来了
+    4. 权限中包含的路由
+
+---
+
 ## redux 使用
+
 ### 原因
+
 **`有多个组件需要使用到相同的数据,如: user 信息(本来用的自定义的memory中转保存) 以及当前页面标题，在点击的时候就确定了，不必再遍历查询获取`**
+
 ### redux 是什么
+
 1. 专门做状态管理的 JS 库
 2. 可适配三大框架,不过基本搭配 react 使用
 3. 作用: 集中管理 react 应用中,多个组件共享的状态
 4. 开发: 与 react-redux 、redux-thunk 等插件配合使用
+
 ### redux 具体使用
+
 ```js
 yarn add redux // 安装 redux
 // 核心
@@ -345,13 +395,16 @@ store.getState()
 store.dispatch({type:"INCREMENT",number})
 store.subscribe(render)
 ```
-* 要点:
+
+- 要点:
   1. react 各组件需要 **读/写** redux 中的状态
-  2. store 是redux 的核心组成部分。组件读取数据就是从 store 读取
+  2. store 是 redux 的核心组成部分。组件读取数据就是从 store 读取
   3. 更新更改 store 中的数据
-    > dispatch(action) // 提交描述对象
-    > reducer 函数接收 旧状态previousState 和行为action 生成新状态newState
+     > dispatch(action) // 提交描述对象
+     > reducer 函数接收 旧状态 previousState 和行为 action 生成新状态 newState
+
 ### react-redux 的使用
+
 ```js
 1. Provider 组件
 // 让所有组件都能得到 state 数据
@@ -369,29 +422,35 @@ connect(
 3. mapStateToProps()
 // 函数: 将 state 数据转换为 UI 组件的标签属性
 ```
+
 #### 问题
+
 > 1. redux 默认不能进行异步处理
-> 2. 需要在 redux 中执行异步任务(ajax、定时器等)  
+> 2. 需要在 redux 中执行异步任务(ajax、定时器等)
 
-例: 不在组件中定时提交 dispatch 触发reducer,而是在 dispatch 中设置定时器,延时返回 action 触发reducer 处理.但是做不到返回值是一个对象,因为里面的返回值,是延时器执行函数的返回值,而延时器本身没有返回值
-
+例: 不在组件中定时提交 dispatch 触发 reducer,而是在 dispatch 中设置定时器,延时返回 action 触发 reducer 处理.但是做不到返回值是一个对象,因为里面的返回值,是延时器执行函数的返回值,而延时器本身没有返回值
 
 ## 数据可视化
-> **看文档写就行,结构直接复制,剩下就是数据变动**
-* echarts(b)
-    * echarts-for-react
-* G2(a)
-    * **bizcharts**: react 中推荐使用基于react包装的G2开源库 `bizcharts`
-    * 需要额外安装 `@antv/data-set`
-## 生产环境跨域问题
-1. 后台服务和前台应用同服务器,`无跨域问题`
-    > 如前台 npm run build 打包好的 build 文件放入后台应有 public 文件夹下
-    后台应用运行时,可以直接访问该端口号,展示的就是前台应用
-    因为是相同端口,发 ajax 请求,所以不存在跨域问题
-2. 不同服务器运行前后台程序
-    1. 后台使用 cors 解决跨域
-    2. 使用 ngnix 解决(一个还行的选择)  
-    `不用管跨域了,还是后台解决吧`
-### BrowserRouter 路由模式问题
-> 根路径后的 path 会被当做后台路由处理,所以刷新会出现404的问题,需要后台处理
 
+> **看文档写就行,结构直接复制,剩下就是数据变动**
+
+- echarts(b)
+  - echarts-for-react
+- G2(a)
+  - **bizcharts**: react 中推荐使用基于 react 包装的 G2 开源库 `bizcharts`
+  - 需要额外安装 `@antv/data-set`
+
+## 生产环境跨域问题
+
+1. 后台服务和前台应用同服务器,`无跨域问题`
+   > 如前台 npm run build 打包好的 build 文件放入后台应有 public 文件夹下
+   > 后台应用运行时,可以直接访问该端口号,展示的就是前台应用
+   > 因为是相同端口,发 ajax 请求,所以不存在跨域问题
+2. 不同服务器运行前后台程序
+   1. 后台使用 cors 解决跨域
+   2. 使用 ngnix 解决(一个还行的选择)  
+      `不用管跨域了,还是后台解决吧`
+
+### BrowserRouter 路由模式问题
+
+> 根路径后的 path 会被当做后台路由处理,所以刷新会出现 404 的问题,需要后台处理
